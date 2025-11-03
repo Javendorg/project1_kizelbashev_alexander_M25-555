@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # labyrinth_game/main.py
 from .constants import ROOMS
-from .utils import describe_current_room
-from .player_actions import get_input, move_player, show_inventory, take_item
+from .utils import describe_current_room, attempt_open_treasure, show_help
+from .player_actions import get_input, move_player, show_inventory, take_item, use_item
 
 def main():
     game_state = {
@@ -17,6 +17,7 @@ def main():
 
     while not game_state["game_over"]:
         user_cmd = get_input()  # Считываем команду от пользователя
+        process_command(game_state=game_state, command=user_cmd)
         
 def process_command(game_state: dict, command: str) -> None:
     """
@@ -36,6 +37,19 @@ def process_command(game_state: dict, command: str) -> None:
             else:
                 print("Укажите предмет для использования (например: use torch)")
 
+        case "solve":
+            current_room = game_state.get('current_room')
+            room = ROOMS.get(current_room, {})
+            if current_room == 'treasure_room':
+                attempt_open_treasure(game_state)
+                if game_state.get('game_over'):
+                    print('Поздравляем! Вы открыли сундук с сокровищами и победили!')
+            elif room.get('puzzle'):
+                from .utils import solve_puzzle
+                solve_puzzle(game_state)
+            else:
+                print('Здесь нечего решать.')
+
         case "go":
             if arg:
                 move_player(game_state, arg)
@@ -53,6 +67,9 @@ def process_command(game_state: dict, command: str) -> None:
 
         case "quit" | "exit":
             game_state["game_over"] = True
+
+        case "help":
+            show_help()
 
         case _:
             print(f"Неизвестная команда: {action}")

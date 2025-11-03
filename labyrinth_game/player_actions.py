@@ -1,4 +1,5 @@
 from .constants import ROOMS
+from .utils import attempt_open_treasure
 
 def show_inventory(game_state) -> None:
     """Печатает содержимое инвентаря игрока или сообщение, если он пуст.
@@ -38,7 +39,9 @@ def take_item(game_state: dict, item_name: str) -> None:
     """
     Функция взятия предмета
     """
-    if item_name in ROOMS[game_state['current_room']]['items']:
+    if item_name == 'treasure_chest':
+        print('Вы не можете поднять сундук, он слишком тяжелый.')
+    elif item_name in ROOMS[game_state['current_room']]['items']:
         game_state['player_inventory'].append(item_name)
         ROOMS[game_state['current_room']]['items'].remove(item_name)
         print(f"Вы подняли: {item_name}")
@@ -65,6 +68,12 @@ def use_item(game_state: dict, item_name: str) -> None:
                 inventory.append('rusty_key')
             else:
                 print('Шкатулка пуста.')
+        case 'treasure_key':
+            if game_state['current_room'] == 'treasure_room':
+                attempt_open_treasure(game_state=game_state)
+            else:
+                print(f"Нельзя использовать {item_name} в этой комнате.")
+
         case 'easel':
             print('Вы нашли старый мольбрерт, он сохранился в хорошем состоянии.')
         case 'scroll':
