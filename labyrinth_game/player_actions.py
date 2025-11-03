@@ -1,5 +1,5 @@
 from .constants import ROOMS
-from .utils import attempt_open_treasure
+from .utils import attempt_open_treasure, describe_current_room, random_event
 
 def show_inventory(game_state) -> None:
     """Печатает содержимое инвентаря игрока или сообщение, если он пуст.
@@ -21,8 +21,6 @@ def move_player(game_state: dict, direction: str) -> None:
     """
         Функция перемещения.
     """
-    from .utils import describe_current_room
-
     current_room = ROOMS[game_state['current_room']]
     exits = current_room.get('exits', {})
     
@@ -32,6 +30,8 @@ def move_player(game_state: dict, direction: str) -> None:
         game_state['steps'] = game_state.get('steps', 0) + 1    # Увеличиваем шаг
 
         describe_current_room(game_state)   # Описание новой комнаты
+
+        random_event(game_state=game_state)
     else:
         print("Нельзя пойти в этом направлении.")
     
