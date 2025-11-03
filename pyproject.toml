@@ -1,7 +1,7 @@
 [project]
-name = "project-1-kizelbashev-m25-555"
+name = "project1_kizelbashev_alexander_m25-555"
 version = "0.1.0"
-description = ""
+description = "Homework 1 Python"
 authors = [
     {name = "javendorg",email = "javendorg777@yandex.ru"}
 ]
