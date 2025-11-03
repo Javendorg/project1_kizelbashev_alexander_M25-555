@@ -1,5 +1,6 @@
 import math
-from .constants import ROOMS
+from .constants import ROOMS, COMMANDS
+
 
 
 def describe_current_room(game_state: dict) -> None:
@@ -32,14 +33,26 @@ def solve_puzzle(game_state: dict) -> None:
     Позволяет игроку попытаться решить загадку в текущей комнате.
     """
     from .player_actions import get_input
+
     room = ROOMS[game_state['current_room']]
     if room.get('puzzle') is None:
         print("Загадок здесь нет.")
         return
+
     question, answer = room['puzzle'][:2]
     print(question)
-    user_answer = get_input('Ваш ответ: ')
-    if user_answer == answer:
+    user_answer = get_input('Ваш ответ: ').strip().lower()
+
+    # Альтернативные варианты ответа
+    from .constants import NUMBERS
+    valid_answers = {str(answer).strip().lower()}
+    if str(answer) in NUMBERS:
+        valid_answers.add(NUMBERS[str(answer)])
+    for num, word in NUMBERS.items():
+        if word == str(answer).strip().lower():
+            valid_answers.add(num)
+
+    if user_answer in valid_answers:
         print('Вы успешно решили загадку!')
         room['puzzle'] = None
         reward = room.get('reward')
@@ -47,6 +60,8 @@ def solve_puzzle(game_state: dict) -> None:
             game_state['player_inventory'].append(reward)
     else:
         print('Неверно. Попробуйте снова.')
+        if game_state['current_room'] == 'trap_room':
+            trigger_trap(game_state)
 
 def attempt_open_treasure(game_state: dict) -> None:
     """
@@ -126,14 +141,29 @@ def random_event(game_state: dict) -> None:
 
 
 
-# labyrinth_game/utils.py
-def show_help():
+# Вызов help
+def show_help(commands: dict = COMMANDS) -> None:
+    """
+    Печатает список доступных команд.
+    """
     print("\nДоступные команды:")
-    print("  go <direction>  - перейти в направлении (north/south/east/west)")
-    print("  look            - осмотреть текущую комнату")
-    print("  take <item>     - поднять предмет")
-    print("  use <item>      - использовать предмет из инвентаря")
-    print("  inventory       - показать инвентарь")
-    print("  solve           - попытаться решить загадку в комнате")
-    print("  quit            - выйти из игры")
-    print("  help            - показать это сообщение")
+    for command, description in commands.items():
+        print(f"{command:<16}{description}")
+
+def move_player(game_state: dict, direction: str) -> None:
+    """
+    Перемещает игрока в указанном направлении, если это возможно.
+    """
+    current_room = game_state['current_room']
+    room_data = ROOMS[current_room]
+
+    # Проверяем, есть ли выход в указанном направлении
+    if direction in room_data['exits']:
+        # Обновляем текущее местоположение игрока
+        game_state['current_room'] = room_data['exits'][direction]
+        game_state['steps_taken'] += 1  # Увеличиваем счетчик шагов
+
+        print(f"Вы переместились в {game_state['current_room']}.")
+        describe_current_room(game_state)  # Описываем новую комнату
+    else:
+        print("Вы не можете туда пойти.")

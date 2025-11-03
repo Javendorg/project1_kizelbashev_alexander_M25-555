@@ -24,9 +24,9 @@ packages = [
 project = "labyrinth_game.main:main"
 
 [tool.ruff]
-line-length = 88
+line-length = 120
 target-version = "py312"
-exclude = ["venv", ".venv", "dist", "__pycache__"]
+exclude = ["venv", ".venv", "dist", "__pycache__", "constants.py"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
