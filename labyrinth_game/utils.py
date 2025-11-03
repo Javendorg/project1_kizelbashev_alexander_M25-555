@@ -1,6 +1,5 @@
 import math
-from .constants import ROOMS, COMMANDS
-
+from .constants import ROOMS, COMMANDS, EVENT_PROBABILITY, EVENT_COUNT, TRAP_DMG_PROBABILITY, EVENT_DEATH_DMG, EVENT_INTENSIVITY
 
 
 def describe_current_room(game_state: dict) -> None:
@@ -109,8 +108,8 @@ def trigger_trap(game_state: dict) -> None:
         deleted_item = game_state['player_inventory'].pop(rand_item_index)
         print(f"Вы чудом успеваете отпрыгнуть, как под вашими ногами осыпается плита. В момент прыжка вы потеряли: {deleted_item}.")
     else:
-        rand_damage = pseudo_random(seed=game_state['steps_taken'], modulo=10)
-        if rand_damage < 3:
+        rand_damage = pseudo_random(seed=game_state['steps_taken'], modulo=TRAP_DMG_PROBABILITY)
+        if rand_damage < EVENT_DEATH_DMG:
             print("Вы не успеваете отпрыгнуть и вместе с плитой падаете в пропасть. Игра окончена.")
             game_state['game_over'] = True
         else:
@@ -118,10 +117,10 @@ def trigger_trap(game_state: dict) -> None:
 
 
 def random_event(game_state: dict) -> None:
-    rand_event_trigger = pseudo_random(seed=game_state['steps_taken'], modulo=10)
+    rand_event_trigger = pseudo_random(seed=game_state['steps_taken'], modulo=EVENT_PROBABILITY)
 
-    if rand_event_trigger == 0:
-        rand_event_number = pseudo_random(seed=game_state['steps_taken'], modulo=2)
+    if rand_event_trigger < EVENT_INTENSIVITY:
+        rand_event_number = pseudo_random(seed=game_state['steps_taken'], modulo=EVENT_COUNT)
 
         print("\nСобытие:")
 
@@ -140,7 +139,6 @@ def random_event(game_state: dict) -> None:
                     trigger_trap(game_state=game_state)
 
 
-
 # Вызов help
 def show_help(commands: dict = COMMANDS) -> None:
     """
@@ -149,21 +147,3 @@ def show_help(commands: dict = COMMANDS) -> None:
     print("\nДоступные команды:")
     for command, description in commands.items():
         print(f"{command:<16}{description}")
-
-def move_player(game_state: dict, direction: str) -> None:
-    """
-    Перемещает игрока в указанном направлении, если это возможно.
-    """
-    current_room = game_state['current_room']
-    room_data = ROOMS[current_room]
-
-    # Проверяем, есть ли выход в указанном направлении
-    if direction in room_data['exits']:
-        # Обновляем текущее местоположение игрока
-        game_state['current_room'] = room_data['exits'][direction]
-        game_state['steps_taken'] += 1  # Увеличиваем счетчик шагов
-
-        print(f"Вы переместились в {game_state['current_room']}.")
-        describe_current_room(game_state)  # Описываем новую комнату
-    else:
-        print("Вы не можете туда пойти.")

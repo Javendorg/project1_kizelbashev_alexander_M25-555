@@ -38,7 +38,7 @@ def move_player(game_state: dict, direction: str) -> None:
         else:
             game_state['current_room'] = exits[direction]   # Обновляем текущую комнату
             
-            game_state['steps'] = game_state.get('steps', 0) + 1    # Увеличиваем шаг
+            game_state['steps_taken'] = game_state.get('steps_taken', 0) + 1    # Увеличиваем шаг
 
             describe_current_room(game_state)   # Описание новой комнаты
         random_event(game_state=game_state)
@@ -94,4 +94,3 @@ def use_item(game_state: dict, item_name: str) -> None:
             print('Вы острили кинжал на камне. Он стал острее.')
         case _:
             print('Вы не знаете, как использовать этот предмет.')
-    

@@ -16,7 +16,7 @@ ROOMS = {
     'trap_room': {
         'description': 'Комната с хитрой плиточной поломкой. На стене видна надпись: "Осторожно — ловушка".',
         'exits': {'west': 'entrance', 'south': 'dungeon'},
-        'items': ['rusty key'],
+        'items': ['rusty_key'],
         'puzzle': ('Система плит активна. Чтобы пройти, назовите слово "шаг" три раза подряд (введите "шаг шаг шаг")', 'шаг шаг шаг'),
         'reward': 'Rew_Trap_Room'
     },
@@ -87,7 +87,6 @@ NUMBERS = {
 
 COMMANDS = {
     'go <direction>': 'перейти в направлении (north/south/east/west)',
-    '<direction>': 'перейти в направлении (north/south/east/west)',
     'look': 'осмотреть текущую комнату',
     'take <item>': 'поднять предмет',
     'use <item>': 'использовать предмет из инвентаря',
@@ -96,3 +95,10 @@ COMMANDS = {
     'quit/exit': 'выйти из игры',
     'help': 'показать это сообщение'
 }
+
+# Константы для случайных событий
+EVENT_PROBABILITY = 10
+EVENT_COUNT = 2
+TRAP_DMG_PROBABILITY = 9
+EVENT_DEATH_DMG = 3
+EVENT_INTENSIVITY = 4
