@@ -1,5 +1,15 @@
 import math
-from .constants import ROOMS, COMMANDS, EVENT_PROBABILITY, EVENT_COUNT, TRAP_DMG_PROBABILITY, EVENT_DEATH_DMG, EVENT_INTENSIVITY
+
+from .constants import (  # noqa: E501
+    COMMANDS,
+    EVENT_COUNT,
+    EVENT_DEATH_DMG,
+    EVENT_INTENSIVITY,
+    EVENT_PROBABILITY,
+    NUMBERS,
+    ROOMS,
+    TRAP_DMG_PROBABILITY,
+)
 
 
 def describe_current_room(game_state: dict) -> None:
@@ -43,7 +53,6 @@ def solve_puzzle(game_state: dict) -> None:
     user_answer = get_input('Ваш ответ: ').strip().lower()
 
     # Альтернативные варианты ответа
-    from .constants import NUMBERS
     valid_answers = {str(answer).strip().lower()}
     if str(answer) in NUMBERS:
         valid_answers.add(NUMBERS[str(answer)])
@@ -57,6 +66,7 @@ def solve_puzzle(game_state: dict) -> None:
         reward = room.get('reward')
         if reward:
             game_state['player_inventory'].append(reward)
+            print(f'Вы получаете предмет: {reward}.')
     else:
         print('Неверно. Попробуйте снова.')
         if game_state['current_room'] == 'trap_room':
@@ -106,14 +116,14 @@ def trigger_trap(game_state: dict) -> None:
     if len(game_state['player_inventory']) > 0:
         rand_item_index = pseudo_random(seed=game_state['steps_taken'], modulo=len(game_state['player_inventory']))
         deleted_item = game_state['player_inventory'].pop(rand_item_index)
-        print(f"Вы чудом успеваете отпрыгнуть, как под вашими ногами осыпается плита. В момент прыжка вы потеряли: {deleted_item}.")
+        print(f"Вы чудом успеваете отпрыгнуть, как под вашими ногами осыпается плита. В момент прыжка вы потеряли: {deleted_item}.") # noqa: E501
     else:
         rand_damage = pseudo_random(seed=game_state['steps_taken'], modulo=TRAP_DMG_PROBABILITY)
         if rand_damage < EVENT_DEATH_DMG:
             print("Вы не успеваете отпрыгнуть и вместе с плитой падаете в пропасть. Игра окончена.")
             game_state['game_over'] = True
         else:
-            print("Вы не успеваете отпрыгнуть, но падаете на мягкую землю внизу. Вам повезло избежать серьезных повреждений.")
+            print("Вы не успеваете отпрыгнуть, но падаете на мягкую землю внизу. Вам повезло избежать серьезных повреждений.") # noqa: E501
 
 
 def random_event(game_state: dict) -> None:
@@ -126,14 +136,16 @@ def random_event(game_state: dict) -> None:
 
         match rand_event_number:
             case 0:
-                print("Громкий дзинь! раздаётся над головой. Посмотрев наверх, вы видите блестящую монету, которая падает вам прямо в руки.")
+                print("Громкий дзинь! раздаётся над головой. Посмотрев наверх, вы видите блестящую монету, которая падает вам прямо в руки.") # noqa: E501
                 game_state['player_inventory'].append('coin')
 
             case 1:
-                print("Вы слышите шорох. Обернувшись, вы видите призрачную фигуру, которая смотрит на вас пустыми глазами.")
+                print("Вы слышите шорох. Обернувшись, вы видите призрачную фигуру, которая смотрит на вас пустыми глазами.") # noqa: E501
                 if "sword" in game_state['player_inventory']:
                     print("Вы быстро поднимаете меч и разгоняете призрак светом меча.")
-            
+                    game_state['player_inventory'].append('ghost_essence')
+                else:
+                    print("Испуг, вы видите тёмную фигуру в углу комнаты") # noqa: E501
             case 2:
                 if game_state['current_room'] == "trap_room" and ("torch" not in game_state['player_inventory']):
                     trigger_trap(game_state=game_state)

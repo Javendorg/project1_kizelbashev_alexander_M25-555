@@ -34,6 +34,24 @@ poetry run project
 ```bash
 make project
 ```
+
+## Дополнительные команды
+1. Сборка проекта:
+```bash
+make build
+```
+
+2. Публикация проекта:
+```bash
+make publish
+```
+
+3. Проверка линтером Ruff:
+```bash
+make lint
+```
+
+
 ## Как победить
 - При запуске вы попадаете в начальную комнату (entrance).
 - Перемещение: north, south, east, west или `go <direction>` (например `go north`).
@@ -53,3 +71,8 @@ make project
     2. Попав в `treasure_room`, откройте сундук. Есть два рабочих способа:
         - Использовать предмет `treasure_key`, если вы его получили раньше — тогда сундук откроется автоматически.
         - Ввести правильный код при запросе. Подсказка к коду есть в описании комнаты — код равен `10`.
+
+
+## Демонстрация asciinema
+
+[![Demo](https://asciinema.org/a/QyQGwbTs3kOUL4FVCnhM1jLVC.svg)](https://asciinema.org/a/QyQGwbTs3kOUL4FVCnhM1jLVC)

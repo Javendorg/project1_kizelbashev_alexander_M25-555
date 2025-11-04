@@ -1,6 +1,7 @@
 from .constants import ROOMS
 from .utils import attempt_open_treasure, describe_current_room, random_event
 
+
 def show_inventory(game_state) -> None:
     """Печатает содержимое инвентаря игрока или сообщение, если он пуст.
     """
@@ -56,7 +57,7 @@ def take_item(game_state: dict, item_name: str) -> None:
         ROOMS[game_state['current_room']]['items'].remove(item_name)
         print(f"Вы подняли: {item_name}")
     else:
-        print(f"Такого предмета здесь нет")
+        print("Такого предмета здесь нет")
 
 def use_item(game_state: dict, item_name: str) -> None:
     """
@@ -72,10 +73,11 @@ def use_item(game_state: dict, item_name: str) -> None:
             print('Вы зажгли факел. Вокруг стало светлее!')
         case 'sword':
             print('Вы почувствовали прилив уверенности, держа меч в руках.')
-        case 'bronze box':
-            if 'rusty_key' not in inventory:
-                print('Вы открыли бронзовую шкатулку и нашли ржавый ключ!')
-                inventory.append('rusty_key')
+        case 'bronze_box':
+            if 'treasure_key' not in inventory:
+                print('Вы открыли бронзовую шкатулку и нашли ключ от сокровищницы!')
+                inventory.remove('bronze_box')
+                inventory.append('treasure_key')
             else:
                 print('Шкатулка пуста.')
         case 'treasure_key':

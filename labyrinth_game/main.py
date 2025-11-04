@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # labyrinth_game/main.py
 from .constants import ROOMS
-from .utils import describe_current_room, attempt_open_treasure, show_help
 from .player_actions import get_input, move_player, show_inventory, take_item, use_item
+from .utils import attempt_open_treasure, describe_current_room, show_help
+
 
 def main():
     game_state = {
@@ -79,6 +80,7 @@ def process_command(game_state: dict, command: str) -> None:
 
         case _:
             print(f"Неизвестная команда: {action}")
+            show_help()
 
 if __name__ == "__main__":
     main()
